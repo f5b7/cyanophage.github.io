@@ -355,9 +355,13 @@ function closeImportPopup() {
   if (containsOneCopyOfAllLetters(importString)){ // fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
-    } else if (importString.length == 33 || importString.length == 34) {
+    } else if (importString.length >= 33 && importString.length <= 36) {
       if (importString.length == 33) {
-        importString = importString + "^"
+        importString = importString + "^⎈␣"
+      } else if (importString.length == 34) {
+        importString = importString + "⎈␣"
+      } else if (importString.length == 35) {
+        importString = importString + "␣"
       }
       needs_update = true;
       importLayout(importString);
@@ -771,6 +775,7 @@ function importLayout(layout) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
+  // TODO: ⎈␣ (35, 36)
   for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
     for (let j = 0; j < 34; j++) {
       if (layout.charAt(i) == rcdata[j][0]) {
@@ -808,6 +813,7 @@ function exportLayout() {
   for (let i = 0; i <= 33; i++) {
     str += rcdata[i][0];
   }
+  // TODO: ^⎈␣ (34, 35, 36)
   return str;
 }
 
