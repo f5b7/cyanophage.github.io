@@ -355,9 +355,13 @@ function closeImportPopup() {
   if (containsOneCopyOfAllLetters(importString)){ // fwhmzqouybjsnrtk-aeicxvpld/;,'.g\^
     if ((mode == "iso" || mode == "ansi") && importString.length >= 33) {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
-    } else if (importString.length == 33 || importString.length == 34) {
+    } else if (importString.length >= 33 && importString.length <= 36) {
       if (importString.length == 33) {
-        importString = importString + "^"
+        importString = importString + "^⎈␣"
+      } else if (importString.length == 34) {
+        importString = importString + "⎈␣"
+      } else if (importString.length == 35) {
+        importString = importString + "␣"
       }
       needs_update = true;
       importLayout(importString);
@@ -771,10 +775,16 @@ function importLayout(layout) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
-  for (let i = 0; i < 34; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^  - 34
-    for (let j = 0; j < 34; j++) {
-      if (layout.charAt(i) == rcdata[j][0]) {
-        // console.log("swap "+layout.charAt(i)+" at " + i + " with position " + j)
+  for (let i = 0; i < 36; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^⎈␣  - 36
+    let key = layout.charAt(i);
+    if (key == "⎈") {
+      key = "ctrl";
+    } else if (key == "␣") {
+      key = "space";
+    }
+    for (let j = 0; j < 36; j++) {
+      if (key == rcdata[j][0]) {
+        // console.log("swap " + key + " at " + i + " with position " + j)
         // swap
         indices = [0, 3, 7]
         for (let id = 0; id < indices.length; id++){
@@ -786,7 +796,7 @@ function importLayout(layout) {
       }
     }
   }
-  for (let i = 0; i < 34; i++) {
+  for (let i = 0; i < 36; i++) {
     if (rcdata[i][0] == "^") {
       if (rcdata[i][1] == 3 && rcdata[i][2] == 4) {
         // cool
@@ -805,8 +815,17 @@ function importLayout(layout) {
 
 function exportLayout() {
   var str = "";
-  for (let i = 0; i <= 33; i++) {
-    str += rcdata[i][0];
+  for (let i = 0; i <= 39; i++) {
+    let key = rcdata[i][0];
+    if (key.length == 1) {
+      str += key;
+    } else if (key == "shift") {
+      str += "^";
+    } else if (key == "ctrl") {
+      str += "⎈";
+    } else if (key == "space") {
+      str += "␣";
+    }
   }
   return str;
 }
