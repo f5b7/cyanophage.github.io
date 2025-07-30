@@ -217,6 +217,14 @@ var rcdata = [
   ["back", 3, 6, 0, 0, 0, 1, 38],
   ["space", 3, 7, 0, 0, 0, 1, 39],
 ]
+// ASCII representations of special keys (by symbols that do not exist as (un-shifted) keys)
+// ^ shift
+// > tab
+// * ctrl
+// # enter
+// @ mod (alt)
+// < back(space)
+// _ space
 
 var effort = [
   [
@@ -357,11 +365,11 @@ function closeImportPopup() {
       document.getElementById('importMessage').innerText = "You can't have layouts with thumb letters on ISO/ANSI"
     } else if (importString.length >= 33 && importString.length <= 36) {
       if (importString.length == 33) {
-        importString = importString + "^⎈␣"
+        importString = importString + "^*_"
       } else if (importString.length == 34) {
-        importString = importString + "⎈␣"
+        importString = importString + "*_"
       } else if (importString.length == 35) {
-        importString = importString + "␣"
+        importString = importString + "_"
       }
       needs_update = true;
       importLayout(importString);
@@ -775,11 +783,11 @@ function importLayout(layout) {
   var decodedString = decodeURIComponent(layout);
   console.log("importing: "+decodedString)
   layout = decodedString
-  for (let i = 0; i < 36; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^⎈␣  - 36
+  for (let i = 0; i < 36; i++) { // qwertyuiop-asdfghjkl;'zxcvbnm,./\^*_  - 36
     let key = layout.charAt(i);
-    if (key == "⎈") {
+    if (key == "*") {
       key = "ctrl";
-    } else if (key == "␣") {
+    } else if (key == "_") {
       key = "space";
     }
     for (let j = 0; j < 36; j++) {
@@ -822,9 +830,9 @@ function exportLayout() {
     } else if (key == "shift") {
       str += "^";
     } else if (key == "ctrl") {
-      str += "⎈";
+      str += "*";
     } else if (key == "space") {
-      str += "␣";
+      str += "_";
     }
   }
   return str;
